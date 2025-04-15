@@ -39,12 +39,16 @@ class PromotionCreateView(APIView):
     """Create a new promotion."""
     permission_classes = [permissions.IsAdminUser]
 
-    def post(self, request):
-        serializer = PromotionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data  # Ensure JSON data is read correctly
+            serializer = PromotionSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class PromotionUpdateView(APIView):
     """Update an existing promotion."""

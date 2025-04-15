@@ -2,16 +2,16 @@ import os
 import sys
 import django
 
-# إضافة المسار الجذر للمشروع إلى sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# إعداد بيئة Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'binc_b.settings')
-django.setup()
-
-from core.models import User
+def setup_django_environment():
+    """Set up the Django environment."""
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'binc_b.settings')
+    django.setup()
 
 def create_admin_user():
+    """Create an admin user if it doesn't already exist."""
+    from core.models import User
+
     username = "admin"
     email = "admin@example.com"
     password = "admin123"
@@ -28,4 +28,5 @@ def create_admin_user():
         print(f"Admin user '{username}' already exists.")
 
 if __name__ == "__main__":
+    setup_django_environment()
     create_admin_user()

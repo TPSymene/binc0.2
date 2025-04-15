@@ -4,6 +4,8 @@ from .models import User
 
 # تعديل نموذج التسجيل ليشمل اختيار نوع المستخدم
 class SignUpForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text="أدخل بريدك الإلكتروني.")
+    
     USER_TYPE_CHOICES = [
         ('owner', 'Owner'),
         ('customer', 'Customer'),

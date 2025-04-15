@@ -93,21 +93,24 @@ class ProductSearchView(APIView):
     """Search for products with filters."""
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request):
-        query = request.GET.get('query', '')
-        category_id = request.GET.get('category', None)
-        brand = request.GET.get('brand', None)
+    def get(self, request, *args, **kwargs):
+        try:
+            query = request.GET.get('query', '')
+            category_id = request.GET.get('category', None)
+            brand = request.GET.get('brand', None)
 
-        products = Product.objects.filter(is_active=True)
-        if query:
-            products = products.filter(name__icontains=query)
-        if category_id:
-            products = products.filter(category_id=category_id)
-        if brand:
-            products = products.filter(brand__name__icontains=brand)
+            products = Product.objects.filter(is_active=True)
+            if query:
+                products = products.filter(name__icontains=query)
+            if category_id:
+                products = products.filter(category_id=category_id)
+            if brand:
+                products = products.filter(brand__name__icontains=brand)
 
-        serializer = ProductListSerializer(products, many=True)
-        return Response(serializer.data)
+            serializer = ProductListSerializer(products, many=True)
+            return Response({"products": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecentlyViewedProductsView(View):
