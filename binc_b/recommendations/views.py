@@ -11,7 +11,9 @@ from .models import ProductRecommendation
 import pandas as pd
 from implicit.als import AlternatingLeastSquares
 from scipy.sparse import csr_matrix
-
+# -----------------------------------------------------------------------
+#                          Recommendation View
+# -----------------------------------------------------------------------
 class RecommendationView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -50,6 +52,9 @@ class RecommendationView(APIView):
             "popular": popular_serializer.data
         })
 
+# -----------------------------------------------------------------------
+#                 Hybrid Recommendation View
+# -----------------------------------------------------------------------
 class HybridRecommendationView(APIView):
     permission_classes = [IsAuthenticated]
 

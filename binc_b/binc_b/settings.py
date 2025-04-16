@@ -127,7 +127,7 @@ TIME_ZONE = 'Asia/Riyadh'  # ضبط المنطقة الزمنية
 USE_I18N = True
 
 
-USE_TZ = True  # تأكد من أن هذا الخيار مفعّل
+USE_TZ = True  
 
 
 # Static files (CSS, JavaScript, Images)

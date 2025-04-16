@@ -7,7 +7,8 @@ from decimal import Decimal
 from django.apps import apps  # Use apps.get_model to resolve circular imports
 
 #----------------------------------------------------------------
-# User model
+#           User model
+#----------------------------------------------------------------
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
         ('admin', 'Admin'),
@@ -44,7 +45,7 @@ class User(AbstractUser):
     def has_permission(self, permission):
         """Check if the user has a specific permission based on user_type."""
         if self.user_type == 'admin':
-            return True  # Admins have all permissions
+            return True  
         elif self.user_type == 'owner':
             return permission in ['manage_shop', 'manage_products']
         elif self.user_type == 'customer':
@@ -52,7 +53,8 @@ class User(AbstractUser):
         return False
 
 #----------------------------------------------------------------
-# Owner Role
+#                   Owner Role
+#----------------------------------------------------------------
 class Owner(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -72,7 +74,8 @@ class Owner(models.Model):
         return self.user.username
 
 #----------------------------------------------------------------
-# Shop module
+#                       Shop module
+#----------------------------------------------------------------
 class Shop(models.Model):
     id = models.UUIDField( 
         primary_key=True,
@@ -107,7 +110,8 @@ class Shop(models.Model):
         return self.name
 
 #----------------------------------------------------------------
-# Brand models
+#                           Brand models
+#----------------------------------------------------------------
 class Brand(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -144,7 +148,8 @@ class Brand(models.Model):
         return self.name
 
 #----------------------------------------------------------------
-# Category models
+#                       Category models
+#----------------------------------------------------------------
 class Category(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -166,7 +171,8 @@ class Category(models.Model):
         return self.name
 
 #----------------------------------------------------------------
-# Product models
+#                       Product models
+#----------------------------------------------------------------
 class Product(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -272,7 +278,8 @@ class Product(models.Model):
         UserBehaviorLog.objects.create(user=user, product=self, action=action)
 
 #----------------------------------------------------------------
-# Specification models
+#                    Specification models
+#----------------------------------------------------------------
 class SpecificationCategory(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -290,7 +297,8 @@ class SpecificationCategory(models.Model):
         return self.category_name
 
 #----------------------------------------------------------------
-# Specification model
+#                       Specification model
+#----------------------------------------------------------------
 class Specification(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -312,6 +320,8 @@ class Specification(models.Model):
     def __str__(self):
         return self.specification_name
 
+#----------------------------------------------------------------
+#                   Product Speci fication
 #----------------------------------------------------------------
 class ProductSpecification(models.Model):
     id = models.UUIDField(
@@ -342,7 +352,8 @@ class ProductSpecification(models.Model):
         return f"{self.product.name} - {self.specification.specification_name}: {self.specification_value}"
 
 #----------------------------------------------------------------
-# Seller Rating model
+#                       Seller Rating model
+#----------------------------------------------------------------
 class SellerRating(models.Model):
     """Model for storing seller ratings."""
     seller = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='ratings')
@@ -362,7 +373,8 @@ class SellerRating(models.Model):
         return f"Rating for {self.seller.name} by {self.user.username}"
 
 #----------------------------------------------------------------
-# Notification model
+#                   Notification model
+#----------------------------------------------------------------
 class Notification(models.Model):
     """Model for storing notifications."""
     NOTIFICATION_TYPES = (

@@ -4,9 +4,10 @@ from reviews.serializers import ReviewSerializer
 
 from core.models import Category, Product
 
-
+#----------------------------------------------------------------
+#                 Category Serializer
+#----------------------------------------------------------------
 class CategorySerializer(serializers.ModelSerializer):
-    """Serializer for the Category model."""
     
     product_count = serializers.SerializerMethodField()
     
@@ -17,9 +18,10 @@ class CategorySerializer(serializers.ModelSerializer):
     def get_product_count(self, obj):
         return obj.products.filter(is_active=True).count()
 
-
+#----------------------------------------------------------------
+#                   ProductList Serializer
+#----------------------------------------------------------------
 class ProductListSerializer(serializers.ModelSerializer):
-    """Serializer for listing products."""
     
     category = CategorySerializer(read_only=True)
     discount = serializers.SerializerMethodField()
@@ -35,9 +37,10 @@ class ProductListSerializer(serializers.ModelSerializer):
     def get_discount(self, obj):
         return obj.discount_percentage
 
-
+#----------------------------------------------------------------
+#                   Product Detail Serializer
+#----------------------------------------------------------------
 class ProductDetailSerializer(serializers.ModelSerializer):
-    """Serializer for detailed product view."""
     
     category = CategorySerializer(read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
