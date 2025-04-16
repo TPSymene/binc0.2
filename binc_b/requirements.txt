@@ -1,0 +1,6 @@
+scikit-learn
+surprise
+lightfm
+pandas
+numpy
+tensorflow

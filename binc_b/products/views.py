@@ -31,6 +31,8 @@ class ProductDetailView(APIView):
 
     def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk, is_active=True)
+        if request.user.is_authenticated:
+            product.log_behavior(request.user, 'view')
         serializer = ProductDetailSerializer(product)
         return Response(serializer.data)
 

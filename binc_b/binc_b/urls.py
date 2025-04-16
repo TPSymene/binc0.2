@@ -9,4 +9,5 @@ urlpatterns = [
     path('categories/', include('products.urls_categories')),
     path('promotions/', include('promotions.urls')),
     path('reviews/', include('reviews.urls')),
+    path('recommendations/', include('recommendations.urls')),
 ]

@@ -4,6 +4,7 @@ import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from decimal import Decimal
+from django.apps import apps  # Use apps.get_model to resolve circular imports
 
 #----------------------------------------------------------------
 # User model
@@ -265,6 +266,10 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.brand.name})"
+
+    def log_behavior(self, user, action):
+        UserBehaviorLog = apps.get_model('recommendations', 'UserBehaviorLog')  # Dynamically get the model
+        UserBehaviorLog.objects.create(user=user, product=self, action=action)
 
 #----------------------------------------------------------------
 # Specification models
