@@ -130,15 +130,15 @@ function Dashboard({ shopData }) {
       try {
         // جلب الإحصائيات
         const statsData = await dashboardService.getStats();
-        setStats({
-          ...stats,
+        setStats(prevStats => ({
+          ...prevStats,
           ...statsData,
           // إضافة قيم افتراضية إذا لم تكن موجودة
           totalViews: statsData.totalViews || 0,
           totalReviews: statsData.totalReviews || 0,
           viewsChange: statsData.viewsChange || 0,
           reviewsChange: statsData.reviewsChange || 0
-        });
+        }));
 
         // جلب المنتجات الأكثر شعبية
         const productsData = await dashboardService.products.getTopProducts();

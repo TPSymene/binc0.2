@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './PersonalizedRecommendations.css';
 import authService from '../services/authService';
+import recommendationService from '../services/recommendationService';
 
 function PersonalizedRecommendations() {
   const [recommendations, setRecommendations] = useState({
@@ -28,12 +28,12 @@ function PersonalizedRecommendations() {
       if (!checkAuth()) {
         // إذا لم يكن المستخدم مسجل الدخول، نعرض فقط المنتجات الشائعة
         try {
-          const response = await axios.get('http://localhost:8000/api/products/popular/');
+          const popularProducts = await recommendationService.getPopularProducts();
           setRecommendations({
             preferred: [],
             liked: [],
             new: [],
-            popular: response.data
+            popular: popularProducts
           });
           setActiveTab('popular');
           setLoading(false);
@@ -45,21 +45,35 @@ function PersonalizedRecommendations() {
         return;
       }
 
-      // إذا كان المستخدم مسجل الدخول، نحصل على التوصيات الشخصية
+      // إذا كان المستخدم مسجل الدخول، نحصل على التوصيات الشخصية المعززة بالذكاء الاصطناعي
       try {
-        const token = authService.getToken();
-        const response = await axios.get('http://localhost:8000/api/recommendations/', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        setRecommendations(response.data);
+        // استخدام خدمة التوصيات الجديدة
+        const recommendationsData = await recommendationService.getRecommendations();
+        setRecommendations(recommendationsData);
         setLoading(false);
+
+        // إذا لم تكن هناك توصيات مفضلة، نعرض المنتجات الشائعة
+        if (!recommendationsData.preferred || recommendationsData.preferred.length === 0) {
+          setActiveTab('popular');
+        }
       } catch (err) {
-        console.error('Error fetching recommendations:', err);
+        console.error('Error fetching AI recommendations:', err);
         setError('حدث خطأ أثناء تحميل التوصيات');
         setLoading(false);
+
+        // محاولة الحصول على المنتجات الشائعة كخيار احتياطي
+        try {
+          const popularProducts = await recommendationService.getPopularProducts();
+          setRecommendations({
+            preferred: [],
+            liked: [],
+            new: [],
+            popular: popularProducts
+          });
+          setActiveTab('popular');
+        } catch (fallbackErr) {
+          console.error('Error fetching fallback products:', fallbackErr);
+        }
       }
     };
 
@@ -118,62 +132,73 @@ function PersonalizedRecommendations() {
   return (
     <div className="recommendations-container">
       <h2 className="recommendations-title">
-        {isAuthenticated ? 'توصيات مخصصة لك' : 'اكتشف المنتجات'}
+        {isAuthenticated ? 'توصيات مخصصة لك بالذكاء الاصطناعي' : 'اكتشف المنتجات'}
       </h2>
-      
+      {isAuthenticated && (
+        <div className="ai-recommendation-info">
+          <div className="ai-icon">
+            <i className="fas fa-robot"></i>
+          </div>
+          <p>
+            يستخدم نظام التوصيات الذكي تقنيات الذكاء الاصطناعي لتحليل تفضيلاتك وسلوكك لتقديم توصيات مخصصة لك. كلما تفاعلت أكثر مع المنتجات، كلما أصبحت التوصيات أكثر دقة.
+          </p>
+        </div>
+      )}
+
       <div className="recommendations-tabs">
         {isAuthenticated && recommendations.preferred.length > 0 && (
-          <button 
+          <button
             className={`tab-button ${activeTab === 'preferred' ? 'active' : ''}`}
             onClick={() => setActiveTab('preferred')}
           >
             منتجات قد تعجبك
           </button>
         )}
-        
+
         {isAuthenticated && recommendations.liked.length > 0 && (
-          <button 
+          <button
             className={`tab-button ${activeTab === 'liked' ? 'active' : ''}`}
             onClick={() => setActiveTab('liked')}
           >
             مشابهة لما أعجبك
           </button>
         )}
-        
+
         {recommendations.new.length > 0 && (
-          <button 
+          <button
             className={`tab-button ${activeTab === 'new' ? 'active' : ''}`}
             onClick={() => setActiveTab('new')}
           >
             جديد
           </button>
         )}
-        
-        <button 
+
+        <button
           className={`tab-button ${activeTab === 'popular' ? 'active' : ''}`}
           onClick={() => setActiveTab('popular')}
         >
           الأكثر شعبية
         </button>
       </div>
-      
+
       <div className="recommendations-content">
         <h3 className="tab-title">{getTabTitle(activeTab)}</h3>
-        
+
         {recommendations[activeTab].length === 0 ? (
           <p className="empty-message">{getEmptyMessage(activeTab)}</p>
         ) : (
           <div className="products-grid">
             {recommendations[activeTab].map(product => (
-              <Link 
-                to={`/products/${product.id}`} 
-                className="product-card" 
+              <Link
+                to={`/products/${product.id}`}
+                className="product-card"
                 key={product.id}
+                onClick={() => isAuthenticated && recommendationService.trackProductView(product.id)}
               >
                 <div className="product-image">
-                  <img 
-                    src={product.image_url || 'https://via.placeholder.com/150'} 
-                    alt={product.name} 
+                  <img
+                    src={product.image_url || 'https://via.placeholder.com/150'}
+                    alt={product.name}
                   />
                   {product.discount > 0 && (
                     <span className="discount-badge">-{product.discount}%</span>
@@ -188,10 +213,26 @@ function PersonalizedRecommendations() {
                         <span className="original-price">{product.original_price} ج.م</span>
                       )}
                     </span>
-                    <span className="product-rating">
-                      <span className="rating-value">{product.rating}</span>
-                      <span className="rating-stars">{'★'.repeat(Math.round(product.rating))}</span>
-                    </span>
+                    <div className="product-actions">
+                      <span className="product-rating">
+                        <span className="rating-value">{product.rating}</span>
+                        <span className="rating-stars">{'★'.repeat(Math.round(product.rating))}</span>
+                      </span>
+                      {isAuthenticated && (
+                        <button
+                          className="like-button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            recommendationService.trackProductLike(product.id);
+                            alert('تم تسجيل إعجابك بالمنتج');
+                          }}
+                          title="أعجبني"
+                        >
+                          <i className="fas fa-heart"></i>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {activeTab === 'preferred' && (
                     <div className="recommendation-reason">
@@ -209,7 +250,7 @@ function PersonalizedRecommendations() {
           </div>
         )}
       </div>
-      
+
       {!isAuthenticated && (
         <div className="login-prompt">
           <p>قم بتسجيل الدخول للحصول على توصيات مخصصة تناسب اهتماماتك</p>
