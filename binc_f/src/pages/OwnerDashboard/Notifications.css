@@ -1,0 +1,367 @@
+.notifications-page {
+  padding-bottom: 30px;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.notifications-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #343a40;
+}
+
+.notifications-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.mark-all-read-btn,
+.delete-all-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mark-all-read-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.mark-all-read-btn:hover {
+  background-color: #0069d9;
+}
+
+.delete-all-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-all-btn:hover {
+  background-color: #c82333;
+}
+
+.mark-all-read-btn i,
+.delete-all-btn i {
+  margin-left: 8px;
+}
+
+/* تنسيق فلاتر الإشعارات */
+.notifications-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #dee2e6;
+  background-color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.filter-btn:not(.active):hover {
+  background-color: #f8f9fa;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-right: 8px;
+}
+
+.filter-btn.active .count {
+  background-color: white;
+  color: #007bff;
+}
+
+/* تنسيق قائمة الإشعارات */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.notification-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notification-item.unread {
+  border-right: 3px solid #007bff;
+  background-color: #f0f7ff;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-left: 15px;
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.notification-type {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.notification-message {
+  font-size: 1rem;
+  color: #343a40;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.view-link:hover {
+  text-decoration: underline;
+}
+
+.mark-read-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+.mark-read-btn:hover {
+  color: #28a745;
+}
+
+.delete-btn:hover {
+  color: #dc3545;
+}
+
+/* تنسيق رسالة عدم وجود إشعارات */
+.no-notifications {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  text-align: center;
+}
+
+.no-data-icon {
+  font-size: 3rem;
+  color: #adb5bd;
+  margin-bottom: 20px;
+}
+
+.no-notifications h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #343a40;
+}
+
+.no-notifications p {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.show-all-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.show-all-btn:hover {
+  background-color: #0069d9;
+}
+
+/* تنسيق الترقيم */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.pagination-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.pagination-btn.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* تنسيق شاشة التحميل والخطأ */
+.notifications-loading,
+.notifications-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 123, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #007bff;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #dc3545;
+}
+
+.retry-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.retry-btn:hover {
+  background-color: #0069d9;
+}
+
+/* تنسيق للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .notifications-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .notifications-actions {
+    width: 100%;
+  }
+  
+  .mark-all-read-btn,
+  .delete-all-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .notification-item {
+    flex-direction: column;
+  }
+  
+  .notification-icon {
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+  
+  .notification-header {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

@@ -12,14 +12,18 @@ from .serializers import ProductListSerializer, ProductDetailSerializer, Categor
 
 class ProductListView(APIView):
     """List all products based on user permissions."""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # السماح بالوصول العام
 
     def get(self, request):
-        if request.user.user_type == 'owner':
-            products = Product.objects.filter(shop__owner__user=request.user)
-        elif request.user.user_type == 'admin':
-            products = Product.objects.all()
+        if request.user.is_authenticated:
+            if request.user.user_type == 'owner':
+                products = Product.objects.filter(shop__owner__user=request.user)
+            elif request.user.user_type == 'admin':
+                products = Product.objects.all()
+            else:
+                products = Product.objects.filter(is_active=True)
         else:
+            # للمستخدمين غير المسجلين، عرض المنتجات النشطة فقط
             products = Product.objects.filter(is_active=True)
 
         serializer = ProductListSerializer(products, many=True)

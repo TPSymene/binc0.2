@@ -1,50 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import authService from '../services/authService';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [data, setData] = useState(null);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError('');
+
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/login/', {
-                email,
-                password
+            console.log('Sending login data:', { email, password });
+
+            // استخدام خدمة المصادقة
+            const userData = await authService.login(email, password);
+            console.log('Login successful:', userData);
+
+            // فحص هيكل البيانات المرجعة
+            console.log('User data structure:', {
+                'userData.user_type': userData.user_type,
+                'userData.user': userData.user,
+                'userData.user?.user_type': userData.user?.user_type,
+                'userData.role': userData.role,
+                'userData.user?.role': userData.user?.role
             });
 
-            localStorage.setItem('access_token', response.data.access);
-            localStorage.setItem('refresh_token', response.data.refresh);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // التحقق من نوع المستخدم مباشرة من البيانات
+            const isOwner = userData.user_type === 'owner' ||
+                          (userData.user && userData.user.user_type === 'owner') ||
+                          userData.role === 'owner' ||
+                          (userData.user && userData.user.role === 'owner');
 
-            navigate('/products');
+            console.log('Is owner (direct check):', isOwner);
+            console.log('Is owner (service check):', authService.isOwner());
+
+            // التوجيه بناءً على نوع المستخدم
+            if (isOwner) {
+                console.log('Navigating to owner dashboard');
+                navigate('/owner-dashboard');
+            } else {
+                console.log('Navigating to products page');
+                navigate('/products');
+            }
         } catch (err) {
-            console.error(err);
-            setError('فشل تسجيل الدخول. تأكد من البريد وكلمة المرور.');
-        }
-    };
+            console.error('Login error:', err);
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/some-data/', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+            if (err.response) {
+                console.error('Error response:', err.response.data);
+                console.error('Status code:', err.response.status);
+
+                // Handle specific error messages from the API
+                const errorData = err.response.data;
+                if (typeof errorData === 'object' && errorData.error) {
+                    setError(errorData.error);
+                } else if (typeof errorData === 'object') {
+                    const errorMessages = Object.entries(errorData)
+                        .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+                        .join('\n');
+                    setError(errorMessages);
+                } else if (typeof errorData === 'string') {
+                    setError(errorData);
+                } else {
+                    setError(`خطأ في الخادم (${err.response.status})`);
                 }
-            });
-            setData(response.data); 
-        } catch (err) {
-            console.error('فشل جلب البيانات:', err);
-            setError('فشل جلب البيانات. تأكد من أنك مسجل الدخول.');
+            } else if (err.request) {
+                // Request was made but no response received
+                console.error('No response received:', err.request);
+                setError('لم يتم تلقي استجابة من الخادم. تأكد من تشغيل الخادم.');
+            } else {
+                // Error in setting up the request
+                console.error('Error setting up request:', err.message);
+                setError('فشل تسجيل الدخول. تأكد من البريد وكلمة المرور.');
+            }
         }
     };
 
-    useEffect(() => {
-        fetchData(); 
-    }, []);
+    // تم إزالة fetchData لأن المسار /api/some-data/ غير موجود في الخادم
 
     return (
         <div style={{ maxWidth: '400px', margin: 'auto', paddingTop: '100px' }}>
@@ -70,13 +104,23 @@ function Login() {
                     دخول
                 </button>
             </form>
-            {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-            {data && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>البيانات:</h3>
-                    <pre>{JSON.stringify(data, null, 2)}</pre>
+            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                ليس لديك حساب؟ <Link to="/signup" style={{ color: '#4CAF50', textDecoration: 'none' }}>إنشاء حساب جديد</Link>
+            </div>
+            {error && (
+                <div style={{
+                    backgroundColor: '#f8d7da',
+                    color: '#721c24',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    marginTop: '15px',
+                    marginBottom: '15px',
+                    whiteSpace: 'pre-line'
+                }}>
+                    {error}
                 </div>
             )}
+            {/* تم إزالة عرض البيانات */}
         </div>
     );
 }

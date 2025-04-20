@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # REST framework
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',  # CORS headers
 
     #APP IN PROJECT
     'core',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware - should be placed before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -127,7 +129,7 @@ TIME_ZONE = 'Asia/Riyadh'  # ضبط المنطقة الزمنية
 USE_I18N = True
 
 
-USE_TZ = True  
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -138,6 +140,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Ensure this directory exists
 ]
+
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -167,4 +173,27 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # الافتراضي
     'core.backends.EmailBackend',  # إضافة دعم تسجيل الدخول بالبريد الإلكتروني
+]
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True  # في بيئة التطوير فقط، لا تستخدم هذا في الإنتاج
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]

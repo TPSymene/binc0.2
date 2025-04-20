@@ -1,0 +1,377 @@
+.dashboard-header {
+  height: 70px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 260px;
+  z-index: 900;
+  transition: right 0.3s ease;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-sidebar-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #495057;
+  cursor: pointer;
+  margin-left: 15px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #343a40;
+  font-weight: 600;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-search {
+  position: relative;
+  margin-left: 20px;
+}
+
+.header-search input {
+  padding: 8px 15px;
+  padding-left: 35px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  width: 200px;
+  transition: width 0.3s ease;
+}
+
+.header-search input:focus {
+  width: 250px;
+  outline: none;
+  border-color: #007bff;
+}
+
+.search-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+/* تنسيق قائمة الإشعارات */
+.notifications-dropdown {
+  position: relative;
+  margin-left: 15px;
+}
+
+.notifications-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #495057;
+  cursor: pointer;
+  padding: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifications-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.7rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifications-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 320px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+  transform: translateX(-50%);
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notifications-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mark-all-read-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.notifications-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;
+}
+
+.notification-icon {
+  margin-left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #495057;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content p {
+  margin: 0 0 5px;
+  font-size: 0.9rem;
+  color: #343a40;
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.notifications-footer {
+  padding: 12px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.view-all-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.view-all-btn:hover {
+  background-color: #f0f7ff;
+}
+
+/* تنسيق قائمة المستخدم */
+.user-dropdown {
+  position: relative;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.user-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.user-btn .user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.user-btn .user-name {
+  font-size: 0.9rem;
+  color: #343a40;
+  margin-left: 5px;
+}
+
+.user-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+  transform: translateX(-50%);
+}
+
+.user-menu-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #f8f9fa;
+}
+
+.user-menu-header .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.user-menu-header .user-info {
+  flex: 1;
+}
+
+.user-menu-header .user-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.user-menu-header .user-email {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.user-menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-menu-list li {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-menu-list li:last-child {
+  border-bottom: none;
+}
+
+.user-menu-list button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 15px;
+  background: none;
+  border: none;
+  text-align: right;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-menu-list button:hover {
+  background-color: #f8f9fa;
+}
+
+.user-menu-list button i {
+  margin-left: 10px;
+  width: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.user-menu-list button span {
+  flex: 1;
+  color: #343a40;
+}
+
+/* تنسيق للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .dashboard-header {
+    right: 0;
+    padding: 0 15px;
+  }
+  
+  .header-title {
+    display: none;
+  }
+  
+  .header-search input {
+    width: 150px;
+  }
+  
+  .header-search input:focus {
+    width: 180px;
+  }
+  
+  .user-btn .user-name {
+    display: none;
+  }
+}
