@@ -5,8 +5,7 @@ import Header from './components/Header';
 import Dashboard from './Dashboard';
 import Products from './Products';
 import ProductForm from './components/ProductForm';
-import Orders from './Orders';
-import OrderDetail from './OrderDetail';
+// تم إزالة استيراد صفحات الطلبات
 import ShopSettings from './ShopSettings';
 import Analytics from './Analytics';
 import Specifications from './Specifications';
@@ -126,8 +125,7 @@ function OwnerDashboard() {
             <Route path="/products" element={<Products shopData={shopData} />} />
             <Route path="/products/add" element={<ProductForm shop={shopData} />} />
             <Route path="/products/edit/:productId" element={<ProductForm shop={shopData} />} />
-            <Route path="/orders" element={<Orders shopData={shopData} />} />
-            <Route path="/orders/:orderId" element={<OrderDetail shopData={shopData} />} />
+            {/* تم إزالة مسارات الطلبات */}
             <Route path="/settings" element={<ShopSettings shopData={shopData} setShopData={setShopData} />} />
             <Route path="/analytics" element={<Analytics shopData={shopData} />} />
             <Route path="/specifications" element={<Specifications shopData={shopData} />} />

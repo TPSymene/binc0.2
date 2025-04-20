@@ -3,20 +3,7 @@ import { Link } from 'react-router-dom';
 import dashboardService from '../../services/dashboardService';
 import './Dashboard.css';
 
-// دالة مساعدة لتحويل حالة الطلب إلى نص
-const getOrderStatusText = (status) => {
-  const statusMap = {
-    'pending': 'قيد الانتظار',
-    'processing': 'قيد المعالجة',
-    'shipped': 'تم الشحن',
-    'delivered': 'تم التوصيل',
-    'completed': 'مكتمل',
-    'cancelled': 'ملغي'
-  };
-  return statusMap[status] || status;
-};
 
-// مكون لعرض البطاقات الإحصائية
 const StatCard = ({ title, value, icon, color, change, period }) => (
   <div className="stat-card">
     <div className="stat-card-icon" style={{ backgroundColor: `${color}20`, color }}>
@@ -36,64 +23,11 @@ const StatCard = ({ title, value, icon, color, change, period }) => (
   </div>
 );
 
-// مكون لعرض آخر الطلبات
-const RecentOrders = ({ orders }) => (
-  <div className="dashboard-card recent-orders">
-    <div className="dashboard-card-header">
-      <h2 className="dashboard-card-title">آخر الطلبات</h2>
-      <Link to="/owner-dashboard/orders" className="view-all-link">
-        عرض الكل <i className="fas fa-arrow-left"></i>
-      </Link>
-    </div>
 
-    <div className="table-responsive">
-      <table className="dashboard-table">
-        <thead>
-          <tr>
-            <th>رقم الطلب</th>
-            <th>العميل</th>
-            <th>المبلغ</th>
-            <th>الحالة</th>
-            <th>التاريخ</th>
-            <th>الإجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.length > 0 ? (
-            orders.map(order => (
-              <tr key={order.id}>
-                <td>#{order.id.substring(0, 8)}</td>
-                <td>{order.customer.name}</td>
-                <td>{order.total_amount} ريال</td>
-                <td>
-                  <span className={`status-badge status-${order.status}`}>
-                    {getOrderStatusText(order.status)}
-                  </span>
-                </td>
-                <td>{new Date(order.created_at).toLocaleDateString('ar-SA')}</td>
-                <td>
-                  <Link to={`/owner-dashboard/orders/${order.id}`} className="action-btn">
-                    <i className="fas fa-eye"></i>
-                  </Link>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" className="no-data">لا توجد طلبات حديثة</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
-
-// مكون لعرض المنتجات الأكثر مبيعًا
 const TopProducts = ({ products }) => (
   <div className="dashboard-card top-products">
     <div className="dashboard-card-header">
-      <h2 className="dashboard-card-title">المنتجات الأكثر مبيعًا</h2>
+      <h2 className="dashboard-card-title">المنتجات الأكثر شعبية</h2>
       <Link to="/owner-dashboard/products" className="view-all-link">
         عرض الكل <i className="fas fa-arrow-left"></i>
       </Link>
@@ -116,7 +50,7 @@ const TopProducts = ({ products }) => (
               <h3 className="product-name">{product.name}</h3>
               <div className="product-meta">
                 <span className="product-price">{product.price} ريال</span>
-                <span className="product-sales">{product.sales} مبيعات</span>
+                <span className="product-sales">{product.views} مشاهدة</span>
               </div>
               <div className="product-rating">
                 <div className="stars" style={{ '--rating': product.rating }}></div>
@@ -132,7 +66,6 @@ const TopProducts = ({ products }) => (
   </div>
 );
 
-// مكون لعرض آخر التقييمات
 const RecentReviews = ({ reviews }) => (
   <div className="dashboard-card recent-reviews">
     <div className="dashboard-card-header">
@@ -177,19 +110,17 @@ const RecentReviews = ({ reviews }) => (
   </div>
 );
 
-// الصفحة الرئيسية للوحة التحكم
 function Dashboard({ shopData }) {
   const [stats, setStats] = useState({
-    totalSales: 0,
-    totalOrders: 0,
+    totalViews: 0,
+    totalReviews: 0,
     totalProducts: 0,
     totalCustomers: 0,
-    salesChange: 0,
-    ordersChange: 0,
+    viewsChange: 0,
+    reviewsChange: 0,
     productsChange: 0,
     customersChange: 0
   });
-  const [recentOrders, setRecentOrders] = useState([]);
   const [topProducts, setTopProducts] = useState([]);
   const [recentReviews, setRecentReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -198,15 +129,19 @@ function Dashboard({ shopData }) {
     const fetchDashboardData = async () => {
       try {
         // جلب الإحصائيات
-        const statsData = await dashboardService.analytics.getStats();
-        setStats(statsData);
+        const statsData = await dashboardService.getStats();
+        setStats({
+          ...stats,
+          ...statsData,
+          // إضافة قيم افتراضية إذا لم تكن موجودة
+          totalViews: statsData.totalViews || 0,
+          totalReviews: statsData.totalReviews || 0,
+          viewsChange: statsData.viewsChange || 0,
+          reviewsChange: statsData.reviewsChange || 0
+        });
 
-        // جلب آخر الطلبات
-        const ordersData = await dashboardService.orders.getRecent();
-        setRecentOrders(ordersData);
-
-        // جلب المنتجات الأكثر مبيعًا
-        const productsData = await dashboardService.products.getTopSelling();
+        // جلب المنتجات الأكثر شعبية
+        const productsData = await dashboardService.products.getTopProducts();
         setTopProducts(productsData);
 
         // جلب آخر التقييمات
@@ -223,7 +158,6 @@ function Dashboard({ shopData }) {
     fetchDashboardData();
   }, []);
 
-  // تم نقل الدالة إلى مستوى أعلى
 
   if (loading) {
     return (
@@ -238,24 +172,24 @@ function Dashboard({ shopData }) {
     <div className="dashboard-page">
       <div className="dashboard-welcome">
         <h1>مرحبًا بك في لوحة التحكم</h1>
-        <p>هنا يمكنك إدارة متجرك ومتابعة أداء منتجاتك وطلباتك</p>
+        <p>هنا يمكنك إدارة متجرك ومتابعة أداء منتجاتك والتفاعل مع المستخدمين</p>
       </div>
 
       <div className="stats-grid">
         <StatCard
-          title="إجمالي المبيعات"
-          value={`${stats.totalSales} ريال`}
-          icon="fa-money-bill-wave"
+          title="إجمالي المشاهدات"
+          value={stats.totalViews || 0}
+          icon="fa-eye"
           color="#28a745"
-          change={stats.salesChange}
+          change={stats.viewsChange || 0}
           period="هذا الشهر"
         />
         <StatCard
-          title="إجمالي الطلبات"
-          value={stats.totalOrders}
-          icon="fa-shopping-cart"
+          title="إجمالي التقييمات"
+          value={stats.totalReviews || 0}
+          icon="fa-star"
           color="#007bff"
-          change={stats.ordersChange}
+          change={stats.reviewsChange || 0}
           period="هذا الشهر"
         />
         <StatCard
@@ -276,9 +210,7 @@ function Dashboard({ shopData }) {
         />
       </div>
 
-      <div className="dashboard-row">
-        <RecentOrders orders={recentOrders} />
-      </div>
+
 
       <div className="dashboard-row two-columns">
         <TopProducts products={topProducts} />

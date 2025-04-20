@@ -42,12 +42,7 @@ function Sidebar({ isOpen, shopData, ownerData }) {
               <span>المنتجات</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/owner-dashboard/orders" className={({ isActive }) => isActive ? 'active' : ''}>
-              <i className="fas fa-shopping-cart"></i>
-              <span>الطلبات</span>
-            </NavLink>
-          </li>
+          {/* تم إزالة قسم الطلبات لأن المنصة للعرض فقط */}
           <li>
             <NavLink to="/owner-dashboard/specifications" className={({ isActive }) => isActive ? 'active' : ''}>
               <i className="fas fa-list-ul"></i>

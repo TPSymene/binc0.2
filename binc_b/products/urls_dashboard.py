@@ -3,8 +3,6 @@ from .views_dashboard import (
     DashboardStatsView,
     OwnerProductsView,
     OwnerProductDetailView,
-    OwnerOrdersView,
-    OwnerOrderDetailView,
     OwnerAnalyticsView,
     OwnerShopSettingsView
 )
@@ -19,9 +17,7 @@ urlpatterns = [
     path('products/', OwnerProductsView.as_view(), name='owner-products'),
     path('products/<uuid:product_id>/', OwnerProductDetailView.as_view(), name='owner-product-detail'),
 
-    # Orders management
-    path('orders/', OwnerOrdersView.as_view(), name='owner-orders'),
-    path('orders/<uuid:order_id>/', OwnerOrderDetailView.as_view(), name='owner-order-detail'),
+    # Orders management has been removed
 
     # Analytics
     path('analytics/', OwnerAnalyticsView.as_view(), name='owner-analytics'),

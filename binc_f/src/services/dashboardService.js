@@ -232,10 +232,31 @@ const dashboardService = {
       console.log('Fetching dashboard stats...');
       const response = await axios.get(`${API_URL}/stats/`, getAuthConfig());
       console.log('Dashboard stats response:', response.data);
-      return response.data;
+
+      // Adaptar los datos para la plataforma de exhibición (sin ventas ni pedidos)
+      return {
+        totalProducts: response.data.total_products || 0,
+        totalCustomers: response.data.total_customers || 0,
+        totalViews: response.data.total_views || 0,
+        totalReviews: response.data.total_reviews || 0,
+        productsChange: response.data.products_change || 0,
+        customersChange: response.data.customers_change || 0,
+        viewsChange: response.data.views_change || 0,
+        reviewsChange: response.data.reviews_change || 0
+      };
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
-      throw error;
+      // Devolver datos predeterminados en caso de error
+      return {
+        totalProducts: 0,
+        totalCustomers: 0,
+        totalViews: 0,
+        totalReviews: 0,
+        productsChange: 0,
+        customersChange: 0,
+        viewsChange: 0,
+        reviewsChange: 0
+      };
     }
   },
 
@@ -524,44 +545,50 @@ const dashboardService = {
         console.error(`Error deleting product ${productId}:`, error);
         throw error;
       }
+    },
+
+    // Obtener los productos más populares (basado en vistas)
+    getTopProducts: async (limit = 5) => {
+      try {
+        // Verificar acceso
+        await dashboardService.checkOwnerAccess();
+
+        console.log('Fetching top products by views...');
+        const response = await axios.get(`${API_URL}/products/`, {
+          ...getAuthConfig(),
+          params: { sort_by: 'views', sort_order: 'desc', limit }
+        });
+        console.log('Top products response:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching top products:', error);
+        // Si hay un error, devolver un array vacío para evitar errores en la UI
+        return [];
+      }
     }
   },
 
-  // Servicios para pedidos
-  orders: {
-    // Obtener todos los pedidos
-    getAll: async (params = {}) => {
+  // Los servicios para pedidos han sido eliminados porque la plataforma es solo para mostrar productos
+
+  // Servicios para reseñas
+  reviews: {
+    // Obtener las reseñas más recientes
+    getRecent: async (limit = 5) => {
       try {
-        const response = await axios.get(`${API_URL}/orders/`, {
+        // Verificar acceso
+        await dashboardService.checkOwnerAccess();
+
+        console.log('Fetching recent reviews...');
+        const response = await axios.get(`${config.API_URL}/reviews/`, {
           ...getAuthConfig(),
-          params
+          params: { sort_by: 'created_at', sort_order: 'desc', limit }
         });
+        console.log('Recent reviews response:', response.data);
         return response.data;
       } catch (error) {
-        console.error('Error fetching orders:', error);
-        throw error;
-      }
-    },
-
-    // Obtener un pedido específico
-    getById: async (orderId) => {
-      try {
-        const response = await axios.get(`${API_URL}/orders/${orderId}/`, getAuthConfig());
-        return response.data;
-      } catch (error) {
-        console.error(`Error fetching order ${orderId}:`, error);
-        throw error;
-      }
-    },
-
-    // Actualizar el estado de un pedido
-    updateStatus: async (orderId, status) => {
-      try {
-        const response = await axios.put(`${API_URL}/orders/${orderId}/`, { status }, getAuthConfig());
-        return response.data;
-      } catch (error) {
-        console.error(`Error updating order ${orderId} status:`, error);
-        throw error;
+        console.error('Error fetching recent reviews:', error);
+        // Si hay un error, devolver un array vacío para evitar errores en la UI
+        return [];
       }
     }
   },
